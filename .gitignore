@@ -1,0 +1,7 @@
+# Unreal Engine build artefacts
+Binaries/
+Intermediate/
+DerivedDataCache/
+Saved/
+.vs/
+*.pdb
