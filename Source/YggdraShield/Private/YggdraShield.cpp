@@ -7,6 +7,7 @@
 #include "ToolMenuSection.h"
 #include "YggdraShieldStyle.h"
 #include "AssetRegistry/AssetRegistryModule.h"
+#include "UObject/AssetRegistryTagsContext.h"
 
 #define LOCTEXT_NAMESPACE "FYggdraShieldModule"
 
@@ -43,7 +44,7 @@ void FYggdraShieldModule::RegisterMenus()
 					{
 						SelectedAsset.GetPackage()->MarkPackageDirty();
 						SelectedAsset.GetPackage()->SetPackageFlags(PKG_DisallowExport);
-						AssetRegistryModule.Get().AssetFullyUpdateTags(SelectedAsset.GetAsset());
+						AssetRegistryModule.Get().AssetUpdateTags(SelectedAsset.GetAsset(), EAssetRegistryTagsCaller::FullUpdate);
 					}
 				}
 			}));
@@ -58,7 +59,7 @@ void FYggdraShieldModule::RegisterMenus()
 					{
 						SelectedAsset.GetPackage()->MarkPackageDirty();
 						SelectedAsset.GetPackage()->ClearPackageFlags(PKG_DisallowExport);
-						AssetRegistryModule.Get().AssetFullyUpdateTags(SelectedAsset.GetAsset());
+						AssetRegistryModule.Get().AssetUpdateTags(SelectedAsset.GetAsset(), EAssetRegistryTagsCaller::FullUpdate);
 					}
 				}
 			}));
