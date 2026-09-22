@@ -63,8 +63,34 @@ void FYggdraShieldModule::RegisterMenus()
 					}
 				}
 			}));
-			InSection.AddEntry(FToolMenuEntry::InitMenuEntry(FName("Lock"), FText::FromString("Lock Export"), FText::FromString("Lock this asset. Can't export if locked."), FSlateIcon(FYggdraShieldStyle::Get().GetStyleSetName(), "YggdraShield.Lock"), LockAction));
-			InSection.AddEntry(FToolMenuEntry::InitMenuEntry(FName("Unlock"), FText::FromString("Unlock Export"), FText::FromString("Unlock this asset. Can export if unlocked."), FSlateIcon(FYggdraShieldStyle::Get().GetStyleSetName(), "YggdraShield.Unlock"), UnlockAction));
+			// Show only the relevant next-state action(s) for the current selection. A single asset yields exactly
+			// one entry; a mixed selection (some locked, some not) may legitimately offer both.
+			bool bAnyUnlocked = false;
+			bool bAnyLocked = false;
+			for(const FAssetData& SelectedAsset : Context->SelectedAssets)
+			{
+				if(UPackage* Package = SelectedAsset.GetPackage())
+				{
+					if(Package->HasAnyPackageFlags(PKG_DisallowExport))
+					{
+						bAnyLocked = true;
+					}
+					else
+					{
+						bAnyUnlocked = true;
+					}
+				}
+			}
+
+			if(bAnyUnlocked)
+			{
+				InSection.AddEntry(FToolMenuEntry::InitMenuEntry(FName("Lock"), FText::FromString("Lock Export"), FText::FromString("Lock this asset. Can't export if locked."), FSlateIcon(FYggdraShieldStyle::Get().GetStyleSetName(), "YggdraShield.Lock"), LockAction));
+			}
+
+			if(bAnyLocked)
+			{
+				InSection.AddEntry(FToolMenuEntry::InitMenuEntry(FName("Unlock"), FText::FromString("Unlock Export"), FText::FromString("Unlock this asset. Can export if unlocked."), FSlateIcon(FYggdraShieldStyle::Get().GetStyleSetName(), "YggdraShield.Unlock"), UnlockAction));
+			}
 		}
 	}));
 }
